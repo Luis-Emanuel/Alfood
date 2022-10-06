@@ -7,7 +7,6 @@ interface RestauranteProps {
 }
 
 const Restaurante = ({ restaurante }: RestauranteProps) => {
-
   return (<section className={estilos.Restaurante}>
     <div className={estilos.Titulo}>
       <h2>{restaurante.nome}</h2>
