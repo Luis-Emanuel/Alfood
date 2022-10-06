@@ -14,7 +14,6 @@ const ListaRestaurantes = () => {
 
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
   const [proximaPagina, setProximaPagina] = useState('')
-  const [paginaAnterior, setPaginaAnterior] = useState('')
 
   const [busca, setBusca] = useState('')
   const [ordenacao, setOrdenador] = useState('')
@@ -24,25 +23,21 @@ const ListaRestaurantes = () => {
       .then(resposta => {
         setRestaurantes(resposta.data.results)
         setProximaPagina(resposta.data.next)
-        setPaginaAnterior(resposta.data.previous)
       })
       .catch(erro => {
         console.log(erro)
       })
   }
   
-  const buscar = (evento: React.FormEvent<HTMLFormElement>) => {
-    evento.preventDefault()
-    const opcoes = {
-      params: {} as IParametrosBusca
-    }
-    if (busca) {
-      opcoes.params.search = busca
-    }
-    if(ordenacao){
-      opcoes.params.ordering = ordenacao
-    }
-    carregarDados('http://localhost:8000/api/v1/restaurantes/', opcoes)
+  const verMais = () => {
+    axios.get<IPaginacao<IRestaurante>>(proximaPagina)
+    .then(resposta => {
+      setRestaurantes([...restaurantes, ...resposta.data.results])
+      setProximaPagina(resposta.data.next)
+    })
+    .catch(erro => {
+      console.log(erro)
+    })
   }
 
   useEffect(() => {
@@ -53,37 +48,11 @@ const ListaRestaurantes = () => {
   return (<section className={style.ListaRestaurantes}>
     <h1>Os restaurantes mais <em>bacanas</em>!</h1>
 
-    <form onSubmit={buscar}>
-      <div>
-        <input type="text" value={busca} onChange={evento => (setBusca(evento.target.value))} />
-      </div>
-      <div>
-        <label htmlFor="select-ordenador">Ordenador</label>
-        <select
-          name="select-ordenador"
-          id="select-ordenador"
-          value={ordenacao}
-          onChange={evento => setOrdenador(evento.target.value)}
-        >
-          <option value="">Padrão</option>
-          <option value="id">ID</option>
-          <option value="nome">Por Nome</option>
-        </select>
-      </div>
-      <div>
-        <button type='submit'>buscar</button>
-      </div>
-    </form>
     {restaurantes?.map(item => <Restaurante restaurante={item} key={item.id} />)}
     {<button
-      onClick={() => carregarDados(paginaAnterior)}
-      disabled={!paginaAnterior}>
-      Página Anterior
-    </button>}
-    {<button
-      onClick={() => carregarDados(proximaPagina)}
+      onClick={verMais}
       disabled={!proximaPagina}>
-      Próxima Proximo</button>}
+      Ver mais </button>}
   </section>)
 }
 
