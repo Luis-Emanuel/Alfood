@@ -4,9 +4,8 @@ import { Link } from "react-router-dom"
 import http from "../../../http"
 import IPrato from "../../../interfaces/IPrato"
 
-
-
 const AdministracaoPratos = () => {
+  
     const [pratos, setPratos] = useState<IPrato[]>([])
 
     useEffect(() => {
@@ -57,7 +56,7 @@ const AdministracaoPratos = () => {
                 <a href={prato.imagem} target="_blank" rel="noreferrer">Ver imagem</a>
               </TableCell>
               <TableCell>
-                [<Link to={`/admin/prato/${prato.id}`}>editar</Link>]
+                [<Link to={`/admin/pratos/${prato.id}`}>editar</Link>]
               </TableCell>
               <TableCell>
                 <Button
