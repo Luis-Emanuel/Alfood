@@ -6,25 +6,24 @@ interface PratoProps {
 }
 
 const Prato = ({ prato }: PratoProps) => {
-  return (
-    <div className={estilos.Prato}>
-      <div className={estilos.Container}>
-        <div>
-          <div className={estilos.EfeitoTorcao}>
-            <img src={prato.imagem} alt={prato.descricao} />
-          </div>
+  return (<div className={estilos.Prato}>
+    <div className={estilos.Container}>
+      <div>
+        <div className={estilos.EfeitoTorcao}>
+          <img src={prato.imagem} alt={prato.descricao}/>
         </div>
       </div>
-      <div className={estilos.Conteudo}>
-        <h3>{prato.nome}</h3>
-        <div className={estilos.Tag}>
-          {prato.tag}
-        </div>
-        <div>
-          {prato.descricao}
-        </div>
+    </div>
+    <div className={estilos.Conteudo}>
+      <h3>{prato.nome}</h3>
+      <div className={estilos.Tag}>
+        {prato.tag}
       </div>
-    </div>)
+      <div>
+        {prato.descricao}
+      </div>
+    </div>
+  </div>)
 }
 
 export default Prato
