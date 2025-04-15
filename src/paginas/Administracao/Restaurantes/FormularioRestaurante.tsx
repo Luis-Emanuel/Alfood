@@ -1,8 +1,8 @@
-import { Button, TextField } from "@mui/material";
-import axios from "axios";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import IRestaurante from "../../../interfaces/IRestaurante";
+import http from "../../../http";
 
 const FormularioRestaurante = () => {
 
@@ -10,7 +10,7 @@ const FormularioRestaurante = () => {
 
   useEffect(() => {
     if (parametros.id) {
-      axios.get<IRestaurante>(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`)
+      http.get<IRestaurante>(`restaurantes/${parametros.id}/`)
         .then(resposta => {
           setNomeRestaurante(resposta.data.nome)
         });
@@ -23,14 +23,14 @@ const FormularioRestaurante = () => {
     evento.preventDefault()
 
     if (parametros.id) {
-      axios.put(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`, {
+      http.put(`restaurantes/${parametros.id}/`, {
         nome: nomeRestaurante
       })
         .then(() => {
           alert('Restaurante atualizado com sucesso!')
         })
     } else {
-      axios.post("http://localhost:8000/api/v2/restaurantes/", {
+      http.post("restaurantes/", {
         nome: nomeRestaurante
       })
         .then(() => {
@@ -42,15 +42,21 @@ const FormularioRestaurante = () => {
   }
 
   return (
-    <form onSubmit={aoSubmeterForm}>
-      <TextField value={nomeRestaurante}
-        onChange={evento => setNomeRestaurante(evento.target.value)}
-        id="standard-basic"
-        label="Nome do restaurante"
-        variant="standard"
-      />
-      <Button type="submit" variant="outlined">Salvar</Button>
-    </form>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Typography component='h1' variant='h6'>Formulário de Restaurantes</Typography>
+      <Box component='form' onSubmit={aoSubmeterForm}>
+        <TextField
+          value={nomeRestaurante}
+          onChange={evento => setNomeRestaurante(evento.target.value)}
+          id="standard-basic"
+          label="Nome do restaurante"
+          variant="standard"
+          fullWidth
+          required
+        />
+        <Button fullWidth sx={{ marginTop: 1 }} type="submit" variant="outlined">Salvar</Button>
+      </Box>
+    </Box>
   )
 }
 
