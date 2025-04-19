@@ -4,6 +4,7 @@ import IRestaurante from "../../../interfaces/IRestaurante";
 import { Link } from "react-router-dom";
 import http from "../../../http";
 
+
 const AdministracaoRestaurantes = () => {
 
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
