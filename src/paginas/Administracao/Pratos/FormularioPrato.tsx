@@ -2,23 +2,37 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typo
 import { useEffect, useState } from "react";
 import http from "../../../http";
 import ITag from "../../../interfaces/ITag";
+import IRestaurante from "../../../interfaces/IRestaurante";
 
 const FormularioPrato = () => {
 
   const [nomePrato, setNomePrato] = useState('')
   const [descricao, setDescricao] = useState('')
   const [tagSelecionada, settagSelecionada] = useState('')
+  const [restauranteSelecionado, setRestauranteSelecionado] = useState('')
+  const [imagem, setImagem] = useState<File | null>(null)
 
 
   const [tags, setTags] = useState<ITag[]>([])
+  const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
 
   useEffect(() => {
     http.get<{ tags: ITag[] }>('tags/')
-      .then(resposta => setTags(resposta.data.tags))
+      .then(resposta => setTags(resposta.data.tags));
+    http.get<IRestaurante[]>('restaurantes/')
+      .then(resposta => setRestaurantes(resposta.data))
   }, [])
 
   const aoSubmeterForm = (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault()
+  }
+
+  const selecionarArquivo = (evento: React.ChangeEvent<HTMLInputElement>) => {
+    if (evento.target.files?.length) {
+      setImagem(evento.target.files[0]);
+    } else {
+      setImagem(null)
+    }
   }
 
   return (
@@ -46,8 +60,8 @@ const FormularioPrato = () => {
           margin="dense"
         />
         <FormControl fullWidth margin="dense">
-          <InputLabel id="selec-tag"> Tag</InputLabel>
-          <Select labelId="selec-tag" value={tagSelecionada} onChange={event => settagSelecionada(event.target.value)}>
+          <InputLabel id="select-tag">Tag</InputLabel>
+          <Select labelId="select-tag" value={tagSelecionada} onChange={event => settagSelecionada(event.target.value)}>
             {tags.map(tag => (
               <MenuItem key={tag.id} value={tag.id}>
                 {tag.value}
@@ -55,6 +69,17 @@ const FormularioPrato = () => {
             ))}
           </Select>
         </FormControl>
+        <FormControl fullWidth margin="dense">
+          <InputLabel id="select-restaurante">Restaurante</InputLabel>
+          <Select labelId="select-restaurante" value={restauranteSelecionado} onChange={evento => setRestauranteSelecionado(evento.target.value)}>
+            {restaurantes.map(restaurante => (
+              <MenuItem key={restaurante.id} value={restaurante.id}>
+                {restaurante.nome}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <input type="file" onChange={selecionarArquivo} />
         <Button fullWidth sx={{ marginTop: 1 }} type="submit" variant="outlined">Salvar</Button>
       </Box>
     </Box>
