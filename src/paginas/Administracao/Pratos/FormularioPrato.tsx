@@ -8,7 +8,7 @@ const FormularioPrato = () => {
 
   const [nomePrato, setNomePrato] = useState('')
   const [descricao, setDescricao] = useState('')
-  const [tagSelecionada, settagSelecionada] = useState('')
+  const [tagSelecionada, setTagSelecionada] = useState('')
   const [restauranteSelecionado, setRestauranteSelecionado] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
 
@@ -25,6 +25,32 @@ const FormularioPrato = () => {
 
   const aoSubmeterForm = (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault()
+
+    const formData = new FormData();
+    formData.append('nome', nomePrato)
+    formData.append('descricao', descricao)
+    formData.append('tag', tagSelecionada)
+    formData.append('restaurante', restauranteSelecionado)
+
+    if (imagem) {
+      formData.append('imagem', imagem)
+    }
+
+    http.request({
+      url: 'pratos/',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    }).then(() =>{
+      alert('Prato cadastrado com sucesso!')
+      setNomePrato('')
+      setDescricao('')
+      setTagSelecionada('')
+      setRestauranteSelecionado('')
+      setImagem(null)
+    }).catch(error => console.error(error));
   }
 
   const selecionarArquivo = (evento: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,9 +87,9 @@ const FormularioPrato = () => {
         />
         <FormControl fullWidth margin="dense">
           <InputLabel id="select-tag">Tag</InputLabel>
-          <Select labelId="select-tag" value={tagSelecionada} onChange={event => settagSelecionada(event.target.value)}>
+          <Select labelId="select-tag" value={tagSelecionada} onChange={event => setTagSelecionada(event.target.value)}>
             {tags.map(tag => (
-              <MenuItem key={tag.id} value={tag.id}>
+              <MenuItem key={tag.id} value={tag.value}>
                 {tag.value}
               </MenuItem>
             ))}
